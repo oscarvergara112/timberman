@@ -18,7 +18,7 @@ LOAD_SHORTCODES_API = true
 CONFIG_SCREEN_ORIENTATION = "portrait"
 
 -- design resolution
-CONFIG_SCREEN_WIDTH  = 640
+CONFIG_SCREEN_WIDTH  = 540
 CONFIG_SCREEN_HEIGHT = 960
 
 -- auto scale mode

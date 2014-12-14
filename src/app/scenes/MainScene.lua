@@ -1,16 +1,19 @@
 
-local MainScene = class("MainScene", function()
-    return display.newScene("MainScene")
-end)
+local gameScene = import(".GameScene")
+local playMenu = import("..ui.PlayMenu")
+local MainScene = class("MainScene", gameScene)
 
 function MainScene:ctor()
-    cc.ui.UILabel.new({
-            UILabelType = 2, text = "Hello, World", size = 64})
-        :align(display.CENTER, display.cx, display.cy)
-        :addTo(self)
+    
 end
 
 function MainScene:onEnter()
+	MainScene.super.onEnter(self)
+
+	self.coverLayer = display.newLayer():addTo(self)
+	display.newSprite("images/logo.png", display.cx, display.top - 100):addTo(self.coverLayer):setAnchorPoint(cc.p(.5, .5))
+
+	playMenu.new(self.coverLayer)
 end
 
 function MainScene:onExit()

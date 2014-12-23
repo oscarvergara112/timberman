@@ -1,19 +1,32 @@
 
-local gameScene = import(".GameScene")
-local playMenu = import("..ui.PlayMenu")
-local MainScene = class("MainScene", gameScene)
+local startMenu = import("..ui.StartMenu")
+local trunk = import("..entity.Trunk")
 
-function MainScene:ctor()
-    
+local MainScene = class("MainScene", function()
+    return display.newScene("MainScene")
+end)
+
+MainScene.BG_NUM = 2
+MainScene.TRUNK_Y = 135
+MainScene.STATE_WELCOME = 1
+MainScene.STATE_DEAD = 2
+MainScene.STATE_SELECT_ROLE = 3
+
+function MainScene:ctor(state)
+    self._state = state or MainScene.STATE_WELCOME
 end
 
 function MainScene:onEnter()
-	MainScene.super.onEnter(self)
+	display.newSprite(string.format("images/bg%d.jpg", math.random(1, MainScene.BG_NUM)), display.cx, display.cy)
+		:addTo(self)
 
-	self.coverLayer = display.newLayer():addTo(self)
-	display.newSprite("images/logo.png", display.cx, display.top - 100):addTo(self.coverLayer):setAnchorPoint(cc.p(.5, .5))
+	trunk.new(display.height-MainScene.TRUNK_Y)
+		:pos(display.cx, display.bottom+MainScene.TRUNK_Y)
+		:addTo(self,2)
 
-	playMenu.new(self.coverLayer)
+	startMenu.new()
+		:addTo(self, 5)
+		:pos(display.cx, display.bottom)
 end
 
 function MainScene:onExit()

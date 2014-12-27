@@ -11,6 +11,8 @@ end
 
 function MyApp:run()
     cc.FileUtils:getInstance():addSearchPath("res/")
+    math.randomseed(os.time())
+
     self:enterScene("MainScene")
 end
 

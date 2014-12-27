@@ -8,9 +8,9 @@ local StartMenu = class("StartMenu", function()
 end)
 
 StartMenu.PLAY_BUTTON_IMAGES = {
-	normal = "images/play.png",
-	pressed = "images/play.png",
-	disabled = "images/play.png",
+	normal = "#play.png",
+	pressed = "#play.png",
+	disabled = "#play.png",
 }
 
 StartMenu.PLAY_BUTTON_SCALE = 0.6
@@ -24,7 +24,7 @@ function StartMenu:ctor(parent)
 	:scale(StartMenu.PLAY_BUTTON_SCALE)
 	:addTo(self)
 
-	display.newSprite("images/logo.png", 0, display.height*3/4):addTo(self)
+	display.newSprite("#logo.png", 0, display.height*3/4):addTo(self)
 end
 
 return StartMenu

@@ -25,7 +25,7 @@ function MainScene:onEnter()
 	display.newSprite(string.format("#bg%d.jpg", math.random(1, MainScene.BG_NUM)), display.cx, display.cy)
 		:addTo(self)
 
-	trunk.new(display.height-MainScene.TRUNK_Y)
+	self._trunk = trunk.new(display.height-MainScene.TRUNK_Y)
 		:pos(display.cx, display.bottom+MainScene.TRUNK_Y)
 		:addTo(self, 2)
 
@@ -45,10 +45,15 @@ end
 
 function MainScene:play()
 	printInfo("MainScene:play()")
-	playTab.new()
-		:addTo(self,5)
-		:pos(display.cx, display.bottom)
-		-- :addEventListener(eventName, listener, tag)
+	local tab = playTab.new()
+						:addTo(self,5)
+						:pos(display.cx, display.bottom)
+	tab:addEventListener(playTab.LEFT_EVENT, function()
+		self._trunk:chop(trunk.DIRE_LEFT)
+	end)
+	tab:addEventListener(playTab.RIGHT_EVENT, function()
+		self._trunk:chop(trunk.DIRE_RIGHT)
+	end)
 end
 
 return MainScene

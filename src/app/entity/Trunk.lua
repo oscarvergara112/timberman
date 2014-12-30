@@ -10,6 +10,8 @@ end)
 
 Trunk.SCALE = 0.65
 Trunk.NONE_BRANCH = false
+Trunk.DIRE_LEFT = 0
+Trunk.DIRE_RIGHT = 1
 
 function Trunk:ctor(height)
 	self._body = {}
@@ -54,7 +56,19 @@ function Trunk:onExit()
 end
 
 function Trunk:chop(dire)
-	-- body
+	if dire == Trunk.DIRE_LEFT then
+		local body = display.newSprite("#body.jpg")
+						:align(display.BOTTOM_CENTER, 0, 0)
+						:addTo(self)
+						:scale(Trunk.SCALE)
+		transition.moveBy(body, {time = 0.4, x = 100, y = 100, onComplete = handler(body, self.removeSelf)})
+	elseif dire == Trunk.DIRE_RIGHT then
+		local body = display.newSprite("#body.jpg")
+						:align(display.BOTTOM_CENTER, 0, 0)
+						:addTo(self)
+						:scale(Trunk.SCALE)
+		transition.moveBy(body, {time = 0.4, x = -100, y = 100, onComplete = handler(body, self.removeSelf)})
+	end
 end
 
 return Trunk

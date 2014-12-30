@@ -2,6 +2,7 @@
 local startMenu = import("..ui.StartMenu")
 local trunk = import("..entity.Trunk")
 local role = import("..entity.Role")
+local playTab = import("..ui.PlayTab")
 
 local MainScene = class("MainScene", function()
     return display.newScene("MainScene")
@@ -35,10 +36,19 @@ function MainScene:onEnter()
 		startMenu.new()
 			:addTo(self, 5)
 			:pos(display.cx, display.bottom)
+			:addEventListener(startMenu.START_EVENT, handler(self, self.play))
 	end
 end
 
 function MainScene:onExit()
+end
+
+function MainScene:play()
+	printInfo("MainScene:play()")
+	playTab.new()
+		:addTo(self,5)
+		:pos(display.cx, display.bottom)
+		-- :addEventListener(eventName, listener, tag)
 end
 
 return MainScene

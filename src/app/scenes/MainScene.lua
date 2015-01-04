@@ -1,7 +1,7 @@
 
 local startMenu = import("..ui.StartMenu")
-local trunk = import("..entity.Trunk")
-local role = import("..entity.Role")
+local Trunk = import("..entity.Trunk")
+local Role = import("..entity.Role")
 local playTab = import("..ui.PlayTab")
 
 local MainScene = class("MainScene", function()
@@ -25,11 +25,11 @@ function MainScene:onEnter()
 	display.newSprite(string.format("#bg%d.jpg", math.random(1, MainScene.BG_NUM)), display.cx, display.cy)
 		:addTo(self)
 
-	self._trunk = trunk.new(display.height-MainScene.TRUNK_Y)
+	self._trunk = Trunk.new(display.height-MainScene.TRUNK_Y)
 		:pos(display.cx, display.bottom+MainScene.TRUNK_Y)
 		:addTo(self, 2)
 
-	role.new(display.cx-MainScene.TRUNK_RADIUS, display.cx+MainScene.TRUNK_RADIUS, display.bottom+MainScene.TRUNK_Y)
+	self._role = Role.new(display.cx-MainScene.TRUNK_RADIUS, display.cx+MainScene.TRUNK_RADIUS, display.bottom+MainScene.TRUNK_Y)
 		:addTo(self, 2)
 
 	if self._state == MainScene.STATE_WELCOME then
@@ -49,10 +49,12 @@ function MainScene:play()
 						:addTo(self,5)
 						:pos(display.cx, display.bottom)
 	tab:addEventListener(playTab.LEFT_EVENT, function()
-		self._trunk:chop(trunk.DIRE_LEFT)
+		self._trunk:chop(Trunk.DIRE_LEFT)
+		self._role:chop(Role.DIRE_LEFT)
 	end)
 	tab:addEventListener(playTab.RIGHT_EVENT, function()
-		self._trunk:chop(trunk.DIRE_RIGHT)
+		self._trunk:chop(Trunk.DIRE_RIGHT)
+		self._role:chop(Role.DIRE_RIGHT)
 	end)
 end
 

@@ -56,4 +56,9 @@ function PlayTab:onEnter()
 		})))
 end
 
+function PlayTab:enableTouch(enabled)
+	self._left:setButtonEnabled(enabled)
+	self._right:setButtonEnabled(enabled)
+end
+
 return PlayTab

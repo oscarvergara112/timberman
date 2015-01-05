@@ -2,6 +2,8 @@
 -- Author: Jacky Woo
 -- Date: 2014-12-23 22:31:42
 --
+local Body = import(".Body")
+
 local Trunk = class("Trunk", function()
 	local node = display.newNode()
 	node:setNodeEventEnabled(true)
@@ -15,7 +17,6 @@ Trunk.DIRE_RIGHT = 1
 
 function Trunk:ctor(height)
 	self._body = {}
-	self._branch = {}
 	self._treeHeight = height
 end
 
@@ -31,23 +32,14 @@ function Trunk:onEnter()
 	local bodyHeight = spriteFrame:getRect().height * Trunk.SCALE
 	local bodyNum = math.ceil(self._treeHeight / (bodyHeight))
 	self._branchNum = bodyNum
+	self._bodyHeight = bodyHeight
 	printInfo(bodyNum)
 	for i = 1, bodyNum do
-		self._body[i] = display.newSprite("#body.jpg")
-							:align(display.BOTTOM_CENTER, 0, (i-1)*bodyHeight)
-							:addTo(self)
-							:scale(Trunk.SCALE)
-	end
-
-	-- branch
-	self._branch[1] = Trunk.NONE_BRANCH
-	for i = 2, bodyNum do
-		local hasBranch = math.random(1,2) == 1
-		if hasBranch then
-			self._branch[i] = {}
-		else
-			self._branch[i] = Trunk.NONE_BRANCH
-		end
+		self._body[i] = Body.new():align(display.CENTER, 0, (i-1)*bodyHeight):addTo(self):scale(Trunk.SCALE)
+		-- self._body[i] = display.newSprite("#body.jpg")
+		-- 					:align(display.BOTTOM_CENTER, 0, (i-1)*bodyHeight)
+		-- 					:addTo(self)
+		-- 					:scale(Trunk.SCALE)
 	end
 end
 
@@ -57,37 +49,49 @@ end
 
 function Trunk:chop(dire)
 	if dire == Trunk.DIRE_LEFT then
-		local body = display.newSprite("#body.jpg")
-						:align(display.BOTTOM_CENTER, 0, 0)
-						:addTo(self)
-						:scale(Trunk.SCALE)
-		-- transition.moveBy(body, {time = 0.4, x = display.width/2, y = 0, onComplete = handler(body, self.removeSelf)})
-		body:runAction(cc.RotateBy:create(0.4, 180))
+		local body = table.remove(self._body, 1)
+		self:reorderChild(body, 1)
+		body:runAction(cc.RotateBy:create(0.6, 270))
 		body:runAction(transition.sequence{
 			cca.jumpBy(0.6, display.width, 50, 100, 1),
 			cca.removeSelf(),
 			})
+
+		-- local top = display.newSprite("#body.jpg")
+		-- 				:align(display.BOTTOM_CENTER, 0, self._branchNum*self._bodyHeight)
+		-- 				:addTo(self)
+		-- 				:scale(Trunk.SCALE)
+		local top = Body.new():align(display.CENTER, 0, self._branchNum*self._bodyHeight):addTo(self):scale(Trunk.SCALE)
+		table.insert(self._body, top)
 	elseif dire == Trunk.DIRE_RIGHT then
-		local body = display.newSprite("#body.jpg")
-						:align(display.BOTTOM_CENTER, 0, 0)
-						:addTo(self)
-						:scale(Trunk.SCALE)
-		-- transition.moveBy(body, {time = 0.4, x = -display.width/2, y = 0, onComplete = handler(body, self.removeSelf)})
-		body:runAction(cc.RotateBy:create(0.4, -180))
+		local body = table.remove(self._body, 1)
+		self:reorderChild(body, 1)
+		body:runAction(cc.RotateBy:create(0.6, -270))
 		body:runAction(transition.sequence{
 			cca.jumpBy(0.6, -display.width, 50, 100, 1),
 			cca.removeSelf(),
 			})
+
+		-- local top = display.newSprite("#body.jpg")
+		-- 				:align(display.BOTTOM_CENTER, 0, self._branchNum*self._bodyHeight)
+		-- 				:addTo(self)
+		-- 				:scale(Trunk.SCALE)
+		local top = Body.new():align(display.CENTER, 0, self._branchNum*self._bodyHeight):addTo(self):scale(Trunk.SCALE)
+		table.insert(self._body, top)
 	end
 	if self._body[1]:getNumberOfRunningActions() == 0 then
 		for _, body in ipairs(self._body) do
 			body:runAction(transition.sequence({
-				cca.place(body:getPositionX(), body:getPositionY()+5),
+				cca.place(body:getPositionX(), body:getPositionY()-self._bodyHeight+5),
 				cca.delay(0.05),
-				cca.place(body:getPositionX(), body:getPositionY()),
+				cca.place(body:getPositionX(), body:getPositionY()-self._bodyHeight),
 				}))
 		end
 	end
+end
+
+function Trunk:hasBranch(dire)
+	return self._body[1]:hasBranch(dire == Trunk.DIRE_RIGHT)
 end
 
 return Trunk

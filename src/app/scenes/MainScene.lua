@@ -49,14 +49,16 @@ function MainScene:play()
 						:addTo(self,5)
 						:pos(display.cx, display.bottom)
 	tab:addEventListener(playTab.LEFT_EVENT, function()
-		self._trunk:chop(Trunk.DIRE_LEFT)
 		self._role:chop(Role.DIRE_LEFT)
-		self:isGameOver(Trunk.DIRE_LEFT)
+		if not self:isGameOver(Trunk.DIRE_LEFT) then
+			self._trunk:chop(Trunk.DIRE_LEFT)
+		end
 	end)
 	tab:addEventListener(playTab.RIGHT_EVENT, function()
-		self._trunk:chop(Trunk.DIRE_RIGHT)
 		self._role:chop(Role.DIRE_RIGHT)
-		self:isGameOver(Trunk.DIRE_RIGHT)
+		if not self:isGameOver(Trunk.DIRE_RIGHT) then
+			self._trunk:chop(Trunk.DIRE_RIGHT)
+		end
 	end)
 	self._playTab = tab
 end
@@ -71,7 +73,9 @@ function MainScene:isGameOver(dire)
 		elseif dire == Trunk.DIRE_LEFT then
 			self._dead = display.newSprite("#die.png",display.cx-MainScene.TRUNK_RADIUS,display.bottom+MainScene.TRUNK_Y):addTo(self)
 		end
+		return true
 	end
+	return false
 end
 
 return MainScene

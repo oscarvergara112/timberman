@@ -8,34 +8,22 @@ local Body = class("Body", function()
 	return node
 end)
 
+Body.SCALE = 0.65
+
 function Body:ctor()
-	self._hasBranch = math.random(1, 3) == 1
-	if self._hasBranch then
-		self._dire = math.random(1,2) == 1 -- true : right  false : left
-	end
+	self._hasBranch = false
+	self._dire = false
 end
 
 function Body:onEnter()
 	self._body = display.newSprite("#body.jpg")
-						:align(display.BOTTOM_CENTER, 0, 0)
-						:addTo(self)
-
-	if self._hasBranch then
-		local spriteFrame = display.newSpriteFrame("body.jpg")
-		local bodyWidth = spriteFrame:getRect().width
-		local bodyHeight = spriteFrame:getRect().height
-
-		if self._dire then
-			self._branch = display.newSprite("#branch.png")
-							:align(display.LEFT_BOTTOM, bodyWidth/2, bodyHeight/2)
-							:addTo(self)
-		else
-			self._branch = display.newSprite("#branch.png")
-							:align(display.RIGHT_BOTTOM, -bodyWidth/2, bodyHeight/2)
-							:addTo(self)
-							:flipX(true)
-		end
-	end
+				:align(display.BOTTOM_CENTER, 0, 0)
+				:addTo(self)
+				:scale(Body.SCALE)
+	local spriteFrame = display.newSpriteFrame("body.jpg")
+	self._bodyHeight = spriteFrame:getRect().height * Body.SCALE
+	self._bodyWidth = spriteFrame:getRect().width*Body.SCALE
+	
 end
 
 function Body:onExit()
@@ -48,6 +36,32 @@ function Body:hasBranch(dire)
 	else
 		return false
 	end
+end
+
+function Body:getBodyHeight()
+	return self._bodyHeight
+end
+
+function Body:setBranchDire( dire )
+	self._dire = dire
+	self._hasBranch = true
+
+	if self._dire then
+		self._branch = display.newSprite("#branch.png")
+						:align(display.LEFT_BOTTOM, self._bodyWidth/2-2, 0)
+						:addTo(self)
+	else
+		self._branch = display.newSprite("#branch.png")
+						:align(display.RIGHT_BOTTOM, -self._bodyWidth/2+2, 0)
+						:addTo(self)
+						:flipX(true)
+
+	end
+	self._branch:scale(Body.SCALE)
+end
+
+function Body:getBranchAndDire( ... )
+	return self._hasBranch, self._dire
 end
 
 return Body

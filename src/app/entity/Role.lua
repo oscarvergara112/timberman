@@ -8,7 +8,7 @@ local Role = class("Role", function()
 	return sprite
 end)
 
-Role.SCALE = 0.85
+Role.SCALE = 0.7
 Role.DIRE_LEFT = 0
 Role.DIRE_RIGHT = 1
 

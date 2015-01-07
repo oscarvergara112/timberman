@@ -51,7 +51,7 @@ function MainScene:play()
 	printInfo("MainScene:play()")
 	local tab = PlayTab.new()
 						:addTo(self,5)
-						:pos(display.cx, display.bottom)
+						:pos(display.left, display.bottom)
 	tab:addEventListener(PlayTab.LEFT_EVENT, function()
 		self._role:chop(Role.DIRE_LEFT)
 		if self:isGameOver(Trunk.DIRE_LEFT) then

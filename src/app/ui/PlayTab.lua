@@ -7,8 +7,10 @@ local PlayTab = class("PlayTab", function()
 end)
 
 -- events
-PlayTab.LEFT_EVENT = "LEFT_EVENT"
-PlayTab.RIGHT_EVENT = "RIGHT_EVENT"
+PlayTab.TOUCH_EVENT = "TOUCH_EVENT"
+
+PlayTab.RIGHT = 1
+PlayTab.LEFT = 2
 
 function PlayTab:ctor()
 	cc.GameObject.extend(self)
@@ -39,11 +41,10 @@ function PlayTab:onEnter()
 	self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
 		if event.name == "began" then
 			if event.x < display.cx then
-				self:dispatchEvent({name=PlayTab.LEFT_EVENT})
+				self:dispatchEvent({name=PlayTab.TOUCH_EVENT, dire=GAMECONFIG.LEFT})
 			else
-				self:dispatchEvent({name=PlayTab.RIGHT_EVENT})
+				self:dispatchEvent({name=PlayTab.TOUCH_EVENT, dire=GAMECONFIG.RIGHT})
 			end
-			printInfo(event.x)
 		end
 		return true
 	end)

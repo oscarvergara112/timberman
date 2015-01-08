@@ -4,6 +4,7 @@ local Trunk = import("..entity.Trunk")
 local Role = import("..entity.Role")
 local PlayTab = import("..ui.PlayTab")
 local ScoreMenu = import("..ui.ScoreMenu")
+local ProgressBar = import("..ui.ProgressBar")
 
 local MainScene = class("MainScene", function()
     return display.newScene("MainScene")
@@ -19,6 +20,7 @@ MainScene.STATE_SELECT_ROLE = 3
 
 function MainScene:ctor(state)
     self._state = state or MainScene.STATE_WELCOME
+    self._isGameStart = false
 end
 
 function MainScene:onEnter()
@@ -48,33 +50,31 @@ function MainScene:onExit()
 end
 
 function MainScene:play()
-	printInfo("MainScene:play()")
 	local tab = PlayTab.new()
 						:addTo(self,5)
 						:pos(display.left, display.bottom)
-	tab:addEventListener(PlayTab.LEFT_EVENT, function()
-		self._role:chop(Role.DIRE_LEFT)
-		if self:isGameOver(Trunk.DIRE_LEFT) then
-			self:gameOver(Trunk.DIRE_LEFT)
-		else
-			self._trunk:chop(Trunk.DIRE_LEFT)
-			if self:isGameOver(Trunk.DIRE_LEFT) then
-				self:gameOver(Trunk.DIRE_LEFT)
-			end
+	tab:addEventListener(PlayTab.TOUCH_EVENT, function(event)
+		if not self._isGameStart then
+			self._isGameStart = true
+			self._progressBar:start(10)
 		end
-	end)
-	tab:addEventListener(PlayTab.RIGHT_EVENT, function()
-		self._role:chop(Role.DIRE_RIGHT)
-		if self:isGameOver(Trunk.DIRE_RIGHT) then
-			self:gameOver(Trunk.DIRE_RIGHT)
+
+		self._role:chop(event.dire)
+		if self:isGameOver(event.dire) then
+			self:gameOver()
 		else
-			self._trunk:chop(Trunk.DIRE_RIGHT)
-			if self:isGameOver(Trunk.DIRE_RIGHT) then
-				self:gameOver(Trunk.DIRE_RIGHT)
+			self._trunk:chop(event.dire)
+			if self:isGameOver(event.dire) then
+				self:gameOver()
 			end
 		end
 	end)
 	self._playTab = tab
+
+	self._progressBar = ProgressBar.new():addTo(self, 5):pos(display.cx, display.top - 150)
+	self._progressBar:addEventListener(ProgressBar.END, function()
+		self:gameOver()
+	end)
 end
 
 function MainScene:isGameOver(dire)
@@ -84,13 +84,10 @@ function MainScene:isGameOver(dire)
 	return false
 end
 
-function MainScene:gameOver(dire)
+function MainScene:gameOver()
+	self._dead = display.newSprite("#die.png", self._role:getPosition()):addTo(self)
 	self._role:removeSelf()
-	if dire == Trunk.DIRE_RIGHT then
-		self._dead = display.newSprite("#die.png",display.cx+MainScene.TRUNK_RADIUS,display.bottom+MainScene.TRUNK_Y):addTo(self)
-	elseif dire == Trunk.DIRE_LEFT then
-		self._dead = display.newSprite("#die.png",display.cx-MainScene.TRUNK_RADIUS,display.bottom+MainScene.TRUNK_Y):addTo(self)
-	end
+	self._progressBar:stop()
 	self._playTab:removeSelf()
 	local menu = ScoreMenu.new()
 	:addTo(self, 5)

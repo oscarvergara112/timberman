@@ -12,8 +12,6 @@ end)
 
 Trunk.SCALE = 0.65
 Trunk.NONE_BRANCH = false
-Trunk.DIRE_LEFT = 0
-Trunk.DIRE_RIGHT = 1
 
 function Trunk:ctor(height)
 	self._body = {}
@@ -56,7 +54,7 @@ function Trunk:onExit()
 end
 
 function Trunk:chop(dire)
-	if dire == Trunk.DIRE_LEFT then
+	if dire == GAMECONFIG.LEFT then
 		local body = table.remove(self._body, 1)
 		self:reorderChild(body, 1)
 		body:runAction(cc.RotateBy:create(0.6, 270))
@@ -72,7 +70,7 @@ function Trunk:chop(dire)
 			if preBranch and preDire ~= dire then dire = preDire end
 			top:setBranchDire(dire) 
 		end
-	elseif dire == Trunk.DIRE_RIGHT then
+	elseif dire == GAMECONFIG.RIGHT then
 		local body = table.remove(self._body, 1)
 		self:reorderChild(body, 1)
 		body:runAction(cc.RotateBy:create(0.6, -270))
@@ -101,7 +99,7 @@ function Trunk:chop(dire)
 end
 
 function Trunk:hasBranch(dire)
-	return self._body[1]:hasBranch(dire == Trunk.DIRE_RIGHT)
+	return self._body[1]:hasBranch(dire == GAMECONFIG.RIGHT)
 end
 
 function Trunk:getBranchAndDire()

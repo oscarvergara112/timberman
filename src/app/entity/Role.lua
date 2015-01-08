@@ -9,8 +9,6 @@ local Role = class("Role", function()
 end)
 
 Role.SCALE = 0.7
-Role.DIRE_LEFT = 0
-Role.DIRE_RIGHT = 1
 
 function Role:ctor(left, right, y)
 	self._left = left
@@ -32,14 +30,14 @@ function Role:onExit()
 end
 
 function Role:chop(dire)
-	if dire == Role.DIRE_RIGHT then
+	if dire == GAMECONFIG.RIGHT then
 		self:setFlippedX(true)
 		self:setPositionX(self._right) 
 		self:setSpriteFrame(self._attLeftFrame) -- left flipx
 		self:performWithDelay(function()
 			self:setSpriteFrame(self._waitFrame)
 		end, 0.1)
-	elseif dire == Role.DIRE_LEFT then
+	elseif dire == GAMECONFIG.LEFT then
 		self:setFlippedX(false)
 		self:setPositionX(self._left)
 		self:setSpriteFrame(self._attLeftFrame)
@@ -48,6 +46,17 @@ function Role:chop(dire)
 		end, 0.1)
 	else
 		printError("Role chop dire error!")
+	end
+end
+
+function Role:getDire()
+	local x = self:getPositionX()
+	if x == self._left then
+		return GAMECONFIG.LEFT
+	elseif x == self._right then
+		return GAMECONFIG.RIGHT 
+	else
+		printError("Role get direction error!")
 	end
 end
 

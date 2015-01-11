@@ -21,6 +21,7 @@ MainScene.STATE_SELECT_ROLE = 3
 function MainScene:ctor(state)
     self._state = state or MainScene.STATE_WELCOME
     self._isGameStart = false
+    self._num = 0
 end
 
 function MainScene:onEnter()
@@ -64,6 +65,8 @@ function MainScene:play()
 			self:gameOver()
 		else
 			self._trunk:chop(event.dire)
+			self._num = self._num + 1
+			self._chopNumTxt:setString(self._num)
 			if self:isGameOver(event.dire) then
 				self:gameOver()
 			end
@@ -75,6 +78,14 @@ function MainScene:play()
 	self._progressBar:addEventListener(ProgressBar.END, function()
 		self:gameOver()
 	end)
+
+	self._chopNumTxt = cc.ui.UILabel.new({
+			text = self._num,
+			font = "font_issue1343.fnt",
+			x = display.cx,
+			y = display.top - 80,
+			align = cc.ui.TEXT_ALIGN_CENTER,
+		}):addTo(self, 3):scale(1.5)
 end
 
 function MainScene:isGameOver(dire)
